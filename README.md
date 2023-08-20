@@ -6,13 +6,13 @@ Installs and configures MySQL or MariaDB server on RHEL/CentOS or Debian/Ubuntu 
 
 ## Requirements
 
-No special requirements; note that this role requires root access, so either run it in a playbook with a global `become: yes`, or invoke the role in your playbook like:
+No special requirements; note that this role requires root access, so either run it in a playbook with a global `become: true`, or invoke the role in your playbook like:
 
 ```yaml
 - hosts: database
   roles:
     - role: geerlingguy.mysql
-      become: yes
+      become: true
 ```
 
 ## Role Variables
@@ -41,9 +41,9 @@ mysql_root_password_update: false
 
 Whether to force update the MySQL root user's password. By default, this role will only change the root user's password when MySQL is first configured. You can force an update by setting this to `yes`.
 
-> Note: If you get an error like `ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)` after a failed or interrupted playbook run, this usually means the root password wasn't originally updated to begin with. Try either removing  the `.my.cnf` file inside the configured `mysql_user_home` or updating it and setting `password=''` (the insecure default password). Run the playbook again, with `mysql_root_password_update` set to `yes`, and the setup should complete.
+> Note: If you get an error like `ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: true)` after a failed or interrupted playbook run, this usually means the root password wasn't originally updated to begin with. Try either removing  the `.my.cnf` file inside the configured `mysql_user_home` or updating it and setting `password=''` (the insecure default password). Run the playbook again, with `mysql_root_password_update` set to `yes`, and the setup should complete.
 
-> Note: If you get an error like `ERROR 1698 (28000): Access denied for user 'root'@'localhost' (using password: YES)` when trying to log in from the CLI you might need to run as root or sudoer.
+> Note: If you get an error like `ERROR 1698 (28000): Access denied for user 'root'@'localhost' (using password: true)` when trying to log in from the CLI you might need to run as root or sudoer.
 
 ```yaml
 mysql_enabled_on_startup: true
@@ -86,7 +86,7 @@ The MySQL users and their privileges. A user has the values:
 
   - `name`
   - `host` (defaults to `localhost`)
-  - `password` (can be plaintext or encrypted—if encrypted, set `encrypted: yes`)
+  - `password` (can be plaintext or encrypted—if encrypted, set `encrypted: true`)
   - `encrypted` (defaults to `no`)
   - `priv` (defaults to `*.*:USAGE`)
   - `append_privs` (defaults to `no`)
@@ -177,7 +177,7 @@ If you want to install MySQL from the official repository instead of installing 
         name: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
         state: present
       when: ansible_os_family == "RedHat"
-  
+
     - name: Override variables for MySQL (RedHat).
       set_fact:
         mysql_daemon: mysqld
@@ -211,7 +211,7 @@ If you have only installed `ansible-core`, be sure to require `community.mysql` 
 ## Example Playbook
 
     - hosts: db-servers
-      become: yes
+      become: true
       vars_files:
         - vars/main.yml
       roles:
